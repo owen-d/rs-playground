@@ -40,7 +40,7 @@ impl Service for Server {
     fn call(&self, _req: Request) -> Self::Future {
         let client = self.client.clone();
         let msg = self.thread_pool.spawn_fn(move || {
-            let res = client.get("https://www.google.com")
+            let res = client.get("http://www.google.com")
                 .send()
                 .map_err(|e| {
                 io::Error::new(io::ErrorKind::Other, format!("timeout: {}", e))
