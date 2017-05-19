@@ -52,7 +52,6 @@ impl Service for Server {
         });
 
         msg.map(|msg| {
-            println!("got this far");
             let json = serde_json::to_string(&msg).unwrap();
             let mut response = Response::new();
             response.body(&json);
