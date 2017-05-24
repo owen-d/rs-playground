@@ -4,7 +4,7 @@ extern crate futures_cpupool;
 use self::futures::{future, Future, Stream};
 use self::future::BoxFuture;
 // use futures::sync::mpsc;
-use self::futures_cpupool::{CpuPool};
+use self::futures_cpupool::CpuPool;
 use std::io;
 use std::ops;
 
@@ -14,7 +14,7 @@ pub struct Delegator<T> {
 }
 
 impl<T> Delegator<T>
-    where T: Send + Sync + ops::Add<Output=T> + 'static
+    where T: Send + Sync + ops::Add<Output = T> + 'static
 {
     pub fn new(data: Vec<T>) -> io::Result<Self> {
         Ok(Delegator {
@@ -32,9 +32,11 @@ impl<T> Delegator<T>
             })
         });
 
-        let res = stream.and_then(|x| x.wait()).collect().wait().map(|completed| {
-            completed.into_iter().fold(initializer, |a, b| a + b)
-        }).map_err(|_| io::Error::new(io::ErrorKind::Other, "failure running thread jobs"));
-        return future::result(res).boxed()
+        let res = stream.and_then(|x| x.wait())
+            .collect()
+            .wait()
+            .map(|completed| completed.into_iter().fold(initializer, |a, b| a + b))
+            .map_err(|_| io::Error::new(io::ErrorKind::Other, "failure running thread jobs"));
+        return future::result(res).boxed();
     }
 }
